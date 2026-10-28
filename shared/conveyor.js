@@ -15,8 +15,8 @@
       w = r.width; h = r.height; canvas.width = w * d; canvas.height = h * d; x.setTransform(d, 0, 0, d, 0, 0);
     }
     function spawn() {
-      const bw = 70 + Math.random() * 60;
-      bags.push({ x: -bw - 10, w: bw, h: 48 + Math.random() * 30, c: BAGS[Math.random() * BAGS.length | 0], id: id++, tag: Math.random() > .25, conf: .86 + Math.random() * .12 });
+      const k = Math.min(1, h / 230), bw = (70 + Math.random() * 60) * k;
+      bags.push({ x: -bw - 10, w: bw, h: (48 + Math.random() * 30) * k, c: BAGS[Math.random() * BAGS.length | 0], id: id++, tag: Math.random() > .25, conf: .86 + Math.random() * .12 });
     }
     function tick() {
       const belt = h * .55, beltH = h * .36, cut = w * .52;

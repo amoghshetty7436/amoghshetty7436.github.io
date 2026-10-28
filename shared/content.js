@@ -62,7 +62,7 @@ window.SITE = {
   const nav = [["about", "About"], ["experience", "Experience"], ["work", "Work"], ["papers", "Papers"], ["contact", "Contact"]];
 
   function thumb(kind) {
-    if (kind === "bubble") return `<img src="assets/figures/bubble-raw.jpg" alt="High-speed frame of vapor bubbles on a heated wall in upward flow"><img class="swap" src="assets/figures/bubble-mask.jpg" alt="">`;
+    if (kind === "bubble") return `<img src="assets/figures/bubble-raw.jpg" width="774" height="680" alt="High-speed frame of vapor bubbles on a heated wall in upward flow"><img class="swap" src="assets/figures/bubble-mask.jpg" width="774" height="680" alt="">`;
     if (kind === "spectro") return `<canvas data-spectro width="200" height="110" aria-label="Animated spectrogram"></canvas>`;
     if (kind === "bags") {
       let g = "";
@@ -143,16 +143,31 @@ window.SITE = {
   const btn = document.getElementById("copy");
   btn.addEventListener("click", () => {
     const done = () => { btn.textContent = "Copied"; setTimeout(() => btn.textContent = "Copy email", 1600); };
-    const sel = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById("mail")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Selected, press ⌘C"; };
+    const sel = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById("mail")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Selected, copy it"; setTimeout(() => btn.textContent = "Copy email", 2500); };
     try { navigator.clipboard.writeText(S.email).then(done, sel); } catch (e) { sel(); }
   });
 
   // scrollspy
   const links = [...mount.querySelectorAll("[data-spy]")];
-  const io = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) links.forEach(a => a.classList.toggle("on", a.dataset.spy === e.target.id));
-  }), { rootMargin: "-40% 0px -55% 0px" });
-  nav.forEach(([id]) => io.observe(document.getElementById(id)));
+  const secs = nav.map(([id]) => document.getElementById(id));
+  let ticking = false;
+  function spy() {
+    ticking = false;
+    const line = innerHeight * .4, atEnd = innerHeight + scrollY >= document.documentElement.scrollHeight - 4;
+    let cur = atEnd ? secs[secs.length - 1] : null;
+    if (!cur) secs.forEach(s => { if (s.getBoundingClientRect().top <= line) cur = s; });
+    links.forEach(a => a.classList.toggle("on", !!cur && a.dataset.spy === cur.id));
+  }
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(spy); } }, { passive: true });
+  addEventListener("resize", spy);
+  spy();
+
+  // the sections are injected by this script, so jump to #section ourselves
+  function toHash() {
+    const t = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (t) t.scrollIntoView({ behavior: "instant", block: "start" });
+  }
+  if (location.hash) { toHash(); addEventListener("load", toHash, { once: true }); }
 
   // spectrogram thumbs
   if (window.Spectro) mount.querySelectorAll("[data-spectro]").forEach(c => new Spectro(c, null, { cols: 200, bins: 110 }));
