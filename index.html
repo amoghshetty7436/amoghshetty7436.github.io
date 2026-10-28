@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Amogh Shetty · ML / CV Engineer</title>
+<meta name="description" content="Amogh Shetty builds computer vision and audio models for real sensor data. Cornell MEng CS, 3 papers.">
+<meta property="og:title" content="Amogh Shetty · ML / CV Engineer">
+<meta property="og:description" content="Vision and audio models for real sensor data: baggage tracking, boiling bubbles, elephant rumbles, aerosols from orbit.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23111513%27/%3E%3Crect x=%277%27 y=%279%27 width=%2718%27 height=%2716%27 fill=%27none%27 stroke=%27%235ef2d6%27 stroke-width=%272.5%27/%3E%3Crect x=%277%27 y=%275%27 width=%2711%27 height=%275%27 fill=%27%235ef2d6%27/%3E%3C/svg%3E">
+<meta property="og:url" content="https://amoghshetty7436.github.io/">
+<link rel="canonical" href="https://amoghshetty7436.github.io/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared/site.css">
+<style>
+/* HUD: the page seen through a detector. CCTV green-grey, YOLO cyan / magenta / lime boxes. */
+:root{
+  --bg:#111513; --bg2:#161b18; --fg:#eef2ec; --muted:#9aa59c; --line:#26302a;
+  --accent:#5ef2d6; --accent-ink:#04110e; --hl:rgba(94,242,214,.05);
+  --pink:#ff4f9a; --lime:#c6f432;
+  --display:"Archivo",system-ui,sans-serif; --body:"Geist",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+.rail .name,.contact h3,.card h4{font-stretch:78%;letter-spacing:-.015em}
+.hero{--beltH:clamp(170px,28vh,240px);background:radial-gradient(ellipse at 30% 30%,#1c231f,var(--bg) 70%);padding-bottom:var(--beltH)}
+.hero .grain{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px);pointer-events:none;z-index:1}
+.hero .meta{position:absolute;z-index:3;left:0;right:0;top:calc(64px + env(safe-area-inset-top,0px))}
+.hero .meta .container{display:flex;justify-content:space-between;gap:12px;font:500 12px var(--mono);color:#b9c4bb}
+.rec::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff3b5c;margin-right:8px;animation:blink 1.2s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.hero .lines{position:relative;z-index:3;padding-top:clamp(140px,22vh,200px);padding-bottom:48px}
+.hero .lines .container{display:grid;gap:clamp(26px,3.4vw,40px);justify-items:start}
+.w{position:relative;font:800 clamp(52px,9vw,124px)/.9 var(--display);font-stretch:68%;text-transform:uppercase;letter-spacing:-.01em;padding:6px 12px;margin-left:-12px}
+.w.md{font-size:clamp(30px,4.6vw,60px);font-weight:700;font-stretch:76%}
+.w.sm{max-width:34ch;font-size:clamp(18px,2.2vw,26px);font-weight:600;font-stretch:90%;text-transform:none;font-family:var(--body)}
+.w::after{content:"";position:absolute;inset:0;border:2px solid var(--c);animation:jit 2.6s ease-in-out infinite;animation-delay:calc(var(--d,0s) * -3)}
+.w .lab{position:absolute;left:-2px;bottom:100%;font:600 12px/1 var(--mono);letter-spacing:0;text-transform:none;background:var(--c);color:#0b0d0c;padding:5px 7px;white-space:nowrap;font-stretch:100%;animation:pop .3s both;animation-delay:calc(var(--d,0s) + .5s)}
+@keyframes pop{from{transform:translateY(4px)}to{transform:none}}
+@keyframes jit{0%,100%{transform:translate(0,0)}33%{transform:translate(2px,-1px) scale(1.004,.994)}66%{transform:translate(-1px,1px) scale(.997,1.005)}}
+.hero .side{position:absolute;z-index:3;right:max(20px,env(safe-area-inset-right,0px));top:clamp(150px,24vh,210px);width:270px;font:500 12.5px/1.8 var(--mono);color:#b9c4bb;border-left:1px solid #3d473f;padding-left:18px}
+.hero .side b{color:var(--accent);font-weight:600}
+.hero .side a{color:var(--fg);border-bottom:1px solid #3d473f}
+.hero .side a:hover{color:var(--accent);border-color:var(--accent)}
+.hero .belt{position:absolute;z-index:2;left:0;right:0;bottom:0;width:100%;height:var(--beltH)}
+.cursor-box{position:absolute;z-index:4;width:84px;height:84px;border:2px solid var(--lime);pointer-events:none;opacity:0;transition:opacity .2s;transform:translate(-50%,-50%)}
+.cursor-box::before{content:"cursor 0.99";position:absolute;left:-2px;bottom:100%;background:var(--lime);color:#0b0d0c;font:600 11px/1 var(--mono);padding:4px 6px;white-space:nowrap}
+.hero:hover .cursor-box{opacity:1}
+@media (hover:none){.cursor-box{display:none}}
+@media (max-width:980px){.hero .side{display:none}}
+@media (max-width:560px){.hero .meta .container span+span{display:none}.hero{min-height:max(620px,90svh)}}
+</style>
+</head><body>
+
+<header class="hero" id="top">
+  <div class="grain"></div>
+  <div class="topbar"><div class="container"><a class="brand" href="#top">amogh.shetty</a>
+    <nav aria-label="Main"><a href="#work">work</a><a href="#papers">papers</a><a class="opt" href="#about">about</a><a href="#contact">contact</a></nav></div></div>
+  <div class="meta"><div class="container"><span class="rec">CAM 02 · TERMINAL 1 · CONVEYOR B</span><span id="ts">2026-10-22 00:00:00</span></div></div>
+  <div class="lines"><div class="container">
+    <h1 class="w" style="--c:var(--pink);--d:.1s"><span class="lab" data-conf="0.99">person 0.99 · id:1</span>Amogh Shetty</h1>
+    <div class="w md" style="--c:var(--accent);--d:.35s"><span class="lab">role 0.98</span>ML / CV Engineer</div>
+    <p class="w sm" style="--c:var(--lime);--d:.6s"><span class="lab">summary 0.97</span>Vision and audio models for real sensor data. Cornell MEng CS, 3 papers.</p>
+  </div></div>
+  <div class="side" aria-label="Highlights"><b>detections</b><br>
+    <a href="work/cooper.html">YOLOv8 + ByteTrack baggage</a><br>
+    <a href="work/cooper.html">TransReID across cameras</a><br>
+    <a href="work/iitb.html">0.982 IoU bubble masks</a><br>
+    <a href="work/elp.html">rumble + gunshot audio</a><br>
+    <a href="work/ftxgb.html">aerosols from MODIS</a><br><br>
+    <b>scroll</b> for the full record ↓</div>
+  <canvas class="belt" id="belt" aria-hidden="true"></canvas>
+  <div class="cursor-box" id="cur" aria-hidden="true"></div>
+</header>
+
+<div id="body"></div>
+
+
+<script src="shared/signal.js"></script>
+<script src="shared/conveyor.js"></script>
+<script src="shared/content.js"></script>
+<script>
+(function(){
+  new Conveyor(document.getElementById('belt'),{ok:'#5ef2d6',bad:'#ff4f6a',font:'600 11px "JetBrains Mono",monospace'});
+  const ts=document.getElementById('ts');
+  const fmt=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');ts.textContent=`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${d.toTimeString().slice(0,8)}`};
+  fmt();setInterval(fmt,1000);
+  const hero=document.querySelector('.hero'),cur=document.getElementById('cur');
+  hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect();cur.style.left=(e.clientX-r.left)+'px';cur.style.top=(e.clientY-r.top)+'px'});
+})();
+</script>
+</body></html>
